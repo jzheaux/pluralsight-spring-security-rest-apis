@@ -2,6 +2,9 @@ $( document ).ajaxSend((event, xhr) => {
     if (security.csrf.value) {
         xhr.setRequestHeader(security.csrf.header, security.csrf.value);
     }
+    if (security.accessToken) {
+        xhr.setRequestHeader("Authorization", "Bearer " + security.accessToken);
+    }
 });
 
 $( document ).ajaxSuccess((event, xhr, objects, data) => {
@@ -14,29 +17,24 @@ $( document ).ajaxSuccess((event, xhr, objects, data) => {
     security.success(xhr);
 });
 
+$( document ).ajaxComplete((event, xhr) => {
+    if (xhr.status === 401 || xhr.status === 403) {
+        return security.authorize();
+    }
+});
+
 const pc = {
     root: "http://127.0.0.1:8180/pc",
-    read: () => $.ajax(pc.root,
-            {
-                method: 'GET',
-                xhrFields: { withCredentials: true },
-                success: (data) => $("#pc").html(data.pc)
-            }),
-    _up: (url) => $.ajax(url,
-            {
-                method: 'POST',
-                xhrFields: { withCredentials: true },
-                success: (data) => $("#pc").html(data.pc)
-            }),
-    _down: (url) => $.ajax(url,
-            {
-                method: 'POST',
-                xhrFields: { withCredentials: true },
-                success: (data) => $("#pc").html(data.pc)
-            })
+    read: () => $.get(pc.root, (data) => $("#pc").html(data.pc)),
+    _up: (url) => $.post(url, (data) => $("#pc").html(data.pc)),
+    _down: (url) => $.post(url, (data) => $("#pc").html(data.pc))
 };
 
 const security = {
+    authorize: () => {
+        const url = "http://idp:8280/oauth2/authorize?response_type=token&client_id=pc-client";
+        location.href = url;
+    },
     csrf: {
         header: "x-csrf-token"
     },
@@ -46,5 +44,10 @@ const security = {
 };
 
 $(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const accessToken = urlParams.get("access_token");
+    if (accessToken) {
+        security.accessToken = accessToken;
+    }
     pc.read();
 });
