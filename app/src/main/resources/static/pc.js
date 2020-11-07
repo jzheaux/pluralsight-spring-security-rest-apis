@@ -11,16 +11,19 @@ const pc = {
     read: () => $.ajax(pc.root,
             {
                 method: 'GET',
+                xhrFields: { withCredentials: true },
                 success: (data) => $("#pc").html(data.pc)
             }),
     _up: (url) => $.ajax(url,
             {
                 method: 'POST',
+                xhrFields: { withCredentials: true },
                 success: (data) => $("#pc").html(data.pc)
             }),
     _down: (url) => $.ajax(url,
             {
                 method: 'POST',
+                xhrFields: { withCredentials: true },
                 success: (data) => $("#pc").html(data.pc)
             })
 };
