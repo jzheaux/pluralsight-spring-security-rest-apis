@@ -35,8 +35,6 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.web.filter.ForwardedHeaderFilter;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import static org.springframework.beans.factory.config.BeanDefinition.ROLE_INFRASTRUCTURE;
 
@@ -65,18 +63,6 @@ public class AuthorizationServerConfig {
 		// @formatter:on
 	}
 
-	@Bean
-	WebMvcConfigurer webMvc() {
-		return new WebMvcConfigurer() {
-			@Override
-			public void addCorsMappings(CorsRegistry registry) {
-				registry.addMapping("/oauth2/token")
-						.allowedOrigins("http://127.0.0.1:8080")
-						.maxAge(0);
-			}
-		};
-	}
-
 	// @formatter:off
 	@Bean
 	public RegisteredClientRepository registeredClientRepository() {
@@ -86,7 +72,7 @@ public class AuthorizationServerConfig {
 				.clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
 				.clientAuthenticationMethod(ClientAuthenticationMethod.NONE)
 				.authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-				.redirectUri("http://127.0.0.1:8080")
+				.redirectUri("http://127.0.0.1:8080/login/oauth2/code/spring")
 				.scope("pc.read")
 				.scope("pc.write")
 				.scope("openid")

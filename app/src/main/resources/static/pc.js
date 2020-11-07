@@ -24,7 +24,7 @@ $( document ).ajaxComplete((event, xhr) => {
 });
 
 const pc = {
-    root: "http://127.0.0.1:8180/pc",
+    root: "http:///127.0.0.1:8080/pc",
     read: () => $.get(pc.root, (data) => $("#pc").html(data.pc)),
     _up: (url) => $.post(url, (data) => $("#pc").html(data.pc)),
     _down: (url) => $.post(url, (data) => $("#pc").html(data.pc))
@@ -32,10 +32,7 @@ const pc = {
 
 const security = {
     authorize: () => {
-        return pkce.authorize();
-    },
-    token: (params) => {
-        return pkce.token(params);
+        location.reload();
     },
     csrf: {
         header: "x-csrf-token"
@@ -46,10 +43,5 @@ const security = {
 };
 
 $(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    security.token(urlParams)
-        .then((token) => {
-            security.accessToken = token;
-            pc.read();
-        });
+    pc.read();
 });
