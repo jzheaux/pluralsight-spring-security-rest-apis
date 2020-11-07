@@ -32,6 +32,8 @@ public class SecurityConfig {
 			public void addCorsMappings(CorsRegistry registry) {
 				registry.addMapping("/pc/**")
 						.allowedOrigins("http://127.0.0.1:8080")
+						.allowedHeaders("X-CSRF-TOKEN")
+						.exposedHeaders("X-CSRF-TOKEN")
 						.allowCredentials(true)
 						.maxAge(0);
 			}
