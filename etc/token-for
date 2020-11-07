@@ -1,0 +1,3 @@
+#!/bin/sh
+
+export TOKEN=`curl --user luke:alderaan 127.0.0.1:8280/oauth2/token -dgrant_type=client_credentials -dscope="pc.read pc.write" | jq -r .access_token`

@@ -16,6 +16,7 @@
 	<modules>
 		<module>api</module>
 		<module>app</module>
+		<module>authz</module>
 	</modules>
 
 </project>
