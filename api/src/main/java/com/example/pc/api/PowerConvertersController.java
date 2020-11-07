@@ -3,6 +3,8 @@ package com.example.pc.api;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.springframework.hateoas.EntityModel;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,20 +17,23 @@ public class PowerConvertersController {
 	private final Map<String, PowerConverters> inventory = new ConcurrentHashMap<>();
 
 	@GetMapping
-	public PowerConverters read(Authentication authentication) {
-		return read(authentication.getName());
+	@PreAuthorize("hasAuthority('SCOPE_pc.read')")
+	public EntityModel<PowerConverters> read(Authentication authentication) {
+		return EntityModel.of(read(authentication.getName()));
 	}
 
 	@PostMapping("/up")
-	public PowerConverters up(Authentication authentication) {
+	@PreAuthorize("hasAuthority('SCOPE_pc.write')")
+	public EntityModel<PowerConverters> up(Authentication authentication) {
 		PowerConverters powerConverters = read(authentication.getName());
-		return powerConverters.up();
+		return EntityModel.of(powerConverters.up());
 	}
 
 	@PostMapping("/down")
-	public PowerConverters down(Authentication authentication) {
+	@PreAuthorize("hasAuthority('SCOPE_pc.write')")
+	public EntityModel<PowerConverters> down(Authentication authentication) {
 		PowerConverters powerConverters = read(authentication.getName());
-		return powerConverters.down();
+		return EntityModel.of(powerConverters.down());
 	}
 
 	private PowerConverters read(String name) {

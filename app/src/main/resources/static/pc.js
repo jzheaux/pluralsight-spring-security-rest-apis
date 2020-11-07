@@ -8,11 +8,23 @@ $( document ).ajaxSend((event, xhr) => {
 });
 
 $( document ).ajaxSuccess((event, xhr, objects, data) => {
-    pc.up = () => pc._up(pc.root + "/up");
-    $("#up-arrow").addClass("enabled")[0].onclick = pc.up;
-
-    pc.down = () => pc._down(pc.root + "/down");
-    $("#down-arrow").addClass("enabled")[0].onclick = pc.down;
+    const links = data["_links"];
+    if (links) {
+        if (links["up"]) {
+            pc.up = () => pc._up(pc.root + "/up");
+            $("#up-arrow").addClass("enabled")[0].onclick = pc.up;
+        } else {
+            delete pc.up;
+            delete $("#up-arrow").removeClass("enabled")[0].onclick;
+        }
+        if (links["down"]) {
+            pc.down = () => pc._down(pc.root + "/down");
+            $("#down-arrow").addClass("enabled")[0].onclick = pc.down;
+        } else {
+            delete pc.down;
+            delete $("#down-arrow").removeClass("enabled")[0].onclick;
+        }
+    }
 
     security.success(xhr);
 });
