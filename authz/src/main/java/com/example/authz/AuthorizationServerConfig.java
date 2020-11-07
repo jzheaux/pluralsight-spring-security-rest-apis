@@ -71,7 +71,7 @@ public class AuthorizationServerConfig {
 			@Override
 			public void addCorsMappings(CorsRegistry registry) {
 				registry.addMapping("/oauth2/token")
-						.allowedOrigins("http://127.0.0.1:8081")
+						.allowedOrigins("http://127.0.0.1:8080")
 						.maxAge(0);
 			}
 		};

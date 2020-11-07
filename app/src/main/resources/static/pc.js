@@ -32,8 +32,10 @@ const pc = {
 
 const security = {
     authorize: () => {
-        const url = "http://idp:8280/oauth2/authorize?response_type=token&client_id=pc-client";
-        location.href = url;
+        return pkce.authorize();
+    },
+    token: (params) => {
+        return pkce.token(params);
     },
     csrf: {
         header: "x-csrf-token"
@@ -45,9 +47,9 @@ const security = {
 
 $(() => {
     const urlParams = new URLSearchParams(window.location.search);
-    const accessToken = urlParams.get("access_token");
-    if (accessToken) {
-        security.accessToken = accessToken;
-    }
-    pc.read();
+    security.token(urlParams)
+        .then((token) => {
+            security.accessToken = token;
+            pc.read();
+        });
 });
